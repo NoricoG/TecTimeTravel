@@ -2,5 +2,5 @@ paths:
   data: /home/shared/tectime1data/
 load:
   opensky:
-    interval: 10
-    intervals_in_past: 359
+    interval: 5
+    minutes_in_past: 60

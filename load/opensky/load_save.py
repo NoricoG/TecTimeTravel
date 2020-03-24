@@ -1,7 +1,8 @@
-import requests
-import yaml
+import glob
 import json
 import logging
+import requests
+import yaml
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -55,10 +56,23 @@ def load_and_save_range(start_time, end_time):
         try:
             load_and_save(timestamp)
         except requests.exceptions.RequestException:
-            logging.error(f"Error while retrieving opensky data for timestamp {timestamp}")
+            logging.exception(f"Error while retrieving opensky data for timestamp {timestamp}")
             return timestamp
         except IOError:
-            logging.error(f"Error while saving opensky data for timestamp {timestamp}")
+            logging.exception(f"Error while saving opensky data for timestamp {timestamp}")
             return timestamp
 
     return next_time
+
+
+def get_latest_saved():
+    file_names = glob.glob(DATA_PATH + "[0-9]*.json")
+    if len(file_names) == 0:
+        return None
+
+    start_index = len(DATA_PATH)
+    end_index = -len(".json")
+    file_numbers = [int(x[start_index:end_index]) for x in file_names]
+
+    latest = max(file_numbers)
+    return latest
